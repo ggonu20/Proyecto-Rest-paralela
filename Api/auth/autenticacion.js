@@ -8,8 +8,6 @@ passport.use(
       clientID: '384543085131-3t3qnb3p4sfg3g6et4io2h8qij2c7g99.apps.googleusercontent.com',
       clientSecret: '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',
       callbackURL: 'http://localhost:3000/auth/google/callback',
-      authorizationURL: 'https://accounts.google.com/o/oauth2/auth',
-      tokenURL: 'https://accounts.google.com/o/oauth2/token',
     },
     (accessToken, refreshToken, profile, done) => {
       // Lógica de autenticación con el perfil de Google
@@ -22,7 +20,13 @@ passport.use(
 passport.serializeUser((user, done) => done(null, user));
 passport.deserializeUser((obj, done) => done(null, obj));
 
-module.exports = passport;
+module.exports = passport.initialize(); // Exporta solo la inicialización de Passport
+
+
+
+
+
+
 
 
 
