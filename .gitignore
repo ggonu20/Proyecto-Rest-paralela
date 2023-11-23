@@ -1,5 +1,5 @@
 Api/node_modules
 Api/.env
 Api/package-lock.json
-Api/utils/serviceAccountKey.json
+Api/config/serviceAccountKey.json
 
