@@ -11,7 +11,14 @@ module.exports = function(app, databaseService){
     });
 
     app.post('/salas',(request,response)=>{
-        const nuevolenguaje = request.body;
+        try{
+            // Bearer "token"
+            const token = request.headers.authorization.split(" ")[1];
+            const payload = jwt.verify(token,secret);
+            if (Date.now() > payload.exp){
+                res.status(401).send({error: error.message});
+            };
+            const nuevolenguaje = request.body;
         console.log(nuevolenguaje);
 
         databaseService.crearSala(nuevolenguaje)
@@ -20,6 +27,11 @@ module.exports = function(app, databaseService){
         }).catch(e => {
             response.status(500).json(e);
         });
+        } catch (error){
+            response.status(401).send({error: error.message});
+        };
+        
+        
 
         
     });
