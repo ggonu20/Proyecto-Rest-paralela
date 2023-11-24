@@ -11,19 +11,33 @@ const databaseService =() =>{
         }
       });
 
-      const table = 'test2';
-      const crearlenguaje = ({pk,name,message}) => {
+      const table = 'salas';
+      const crearSala = ({name,status,capacity}) => {
         return knex(table).insert({
-            pk: pk,
+            //pk: pk,
             name: name,
-            message: message
+            status: status,
+            capacity: capacity
         });
+
+      };
+
+      const listarSalas = () => {
+        return knex(table).select(
+            'pk',
+            'name',
+            'status',
+            'capacity'
+        );
 
       };
     
       return {
-        crearlenguaje
+        crearSala
     };
+
+    
+
 };
 
 module.exports = {

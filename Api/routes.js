@@ -4,15 +4,17 @@ module.exports = function(app, databaseService){
 
     });
 
-    app.get('/lenguajes',(request,response)=>{
-        response.status(200).json({"mensaje": "mis lenguajes"});    
+    app.get('/salas',(request,response)=>{
+        databaseService.listarSalas();
+        response.send(data);
+        response.status(200).json({"mensaje": "listado de salas"});    
     });
 
-    app.post('/lenguajes',(request,response)=>{
+    app.post('/salas',(request,response)=>{
         const nuevolenguaje = request.body;
         console.log(nuevolenguaje);
 
-        databaseService.crearlenguaje(nuevolenguaje)
+        databaseService.crearSala(nuevolenguaje)
         .then(()=>{
             response.status(200).json({"mensaje": "Creado"});    
         }).catch(e => {
