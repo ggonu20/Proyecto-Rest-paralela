@@ -14,6 +14,6 @@ function isAuthenticated(req, res, next) {
 }
 
 module.exports = {
-  isAuthenticated,
+  isAuthenticated
   // Otras funciones relacionadas con la autenticación si es necesario
 };

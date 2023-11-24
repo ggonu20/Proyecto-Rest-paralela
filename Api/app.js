@@ -46,6 +46,7 @@ app.get('/perfil', Middleware.isAuthenticated, (req, res) => {
 
 // Rutas
 app.use('/api/salas', Middleware.isAuthenticated, salasRoutes);
+app.use('/auth', authRoutes);
 app.use('/api', Middleware.isAuthenticated, reservasRoutes);
 app.use('/', indexRoutes);
 

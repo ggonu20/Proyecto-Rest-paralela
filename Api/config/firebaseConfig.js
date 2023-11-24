@@ -1,7 +1,6 @@
 // firebaseConfig.js
 require('dotenv').config();
-const { initializeApp } = require('@firebase/app');
-require('@firebase/auth');
+const  firebase   = require('firebase/app');
 require('@firebase/database');
 
 const firebaseConfig = {
@@ -15,6 +14,6 @@ const firebaseConfig = {
 };
 
 // Verificar si ya existe una instancia de Firebase
-const firebaseApp = initializeApp(firebaseConfig, 'unique-app-name');
+const firebaseApp = firebase.initializeApp(firebaseConfig);
 
 module.exports = firebaseApp;
