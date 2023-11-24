@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const { crearSala, listarSalas, borrarSala, actualizarSala, verificarExistenciaSala } = require('./services/databaseService');
+const { crearSala, listarSalas, borrarSala, actualizarSala, verificarExistenciaSala, crearReserva, listarReservas, actualizarReserva, borrarReservaPorToken, obtenerReservaPorToken } = require('./services/databaseService');
 require('dotenv').config();
 const secret = process.env.SECRET;
 module.exports = function(app, databaseService){
@@ -89,5 +89,103 @@ module.exports = function(app, databaseService){
           response.status(401).json({ error: error.message });
         }
       });
+//--------------------reservas---------------------------
+
+
+    app.post('/reservas', async (request, response) => {
+        try {
+            const token = request.headers.authorization.split(" ")[1];
+            const payload = jwt.verify(token, secret);
+            if (Date.now() > payload.exp) {
+                return response.status(401).json({ error: 'Token expirado' });
+            }
+            try {
+                const nuevaReserva = request.body;
+                await crearReserva(nuevaReserva);
+                response.status(200).json({ mensaje: 'Reserva creada con éxito' });
+              } catch (error) {
+                response.status(500).json({ error: error.message });
+              };
+        } catch (error) {
+            response.status(500).json({ error: error.message });
+        }
+    });  
+    
+
+    app.get('/reservas', async (request, response) => {
+        try {
+            const token = request.headers.authorization.split(" ")[1];
+            const payload = jwt.verify(token, secret);
+            if (Date.now() > payload.exp) {
+                return response.status(401).json({ error: 'Token expirado' });
+            }
+            try {
+                const reservas = await listarReservas();
+                response.status(200).json({ reservas, mensaje: 'Listado de reservas' });
+              } catch (error) {
+                response.status(500).json({ error: error.message });
+              };
+        } catch (error) {
+            response.status(500).json({ error: error.message });
+        }
+    });
+    
+    app.put('/reservas/actualizar/:token', async (request, response) => {
+        try {
+            const token = request.headers.authorization.split(" ")[1];
+            const payload = jwt.verify(token, secret);
+            if (Date.now() > payload.exp) {
+                return response.status(401).json({ error: 'Token expirado' });
+            }
+            try {
+                const token = request.params.token;
+                const datosActualizados = request.body;
+                await actualizarReserva(token, datosActualizados);
+                response.status(200).json({ mensaje: 'Reserva actualizada con éxito' });
+              } catch (error) {
+                response.status(500).json({ error: error.message });
+              };
+        } catch (error) {
+            response.status(500).json({ error: error.message });
+        }
+    });
+
+    app.delete('/reservas/borrar/:token', async (request, response) => {
+        try {
+            const token = request.headers.authorization.split(" ")[1];
+            const payload = jwt.verify(token, secret);
+            if (Date.now() > payload.exp) {
+                return response.status(401).json({ error: 'Token expirado' });
+            }
+            const tokenReserva = request.params.token;
+            await borrarReservaPorToken(tokenReserva);
+            response.status(200).json({ mensaje: 'Reserva eliminada con éxito' });
+        } catch (error) {
+            response.status(500).json({ error: error.message });
+        }
+    });
+
+    app.get('/reservas/obtener/:token', async (request, response) => {
+        try {
+            const token = request.headers.authorization.split(" ")[1];
+            const payload = jwt.verify(token, secret);
+            if (Date.now() > payload.exp) {
+                return response.status(401).json({ error: 'Token expirado' });
+            }
+    
+            const tokenReserva = request.params.token;
+            const reserva = await obtenerReservaPorToken(tokenReserva);
+    
+            if (!reserva) {
+                return response.status(404).json({ error: 'Reserva no encontrada' });
+            }
+    
+            response.status(200).json({ reserva, mensaje: 'Reserva obtenida con éxito' });
+        } catch (error) {
+            response.status(401).json({ error: error.message });
+        }
+    });
+
+      
 
 };
