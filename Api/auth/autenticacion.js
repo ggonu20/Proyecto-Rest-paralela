@@ -6,12 +6,16 @@ const initializePassport = () => {
   passport.use(
     new GoogleStrategy(
       {
-        clientID: '384543085131-3t3qnb3p4sfg3g6et4io2h8qij2c7g99.apps.googleusercontent.com',
-        clientSecret: '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',
-        callbackURL: 'http://localhost:3000/auth/google/callback',
+        clientID: process.env.CLIENT_ID,
+        clientSecret: process.env.CLIENT_SECRET,
+        callbackURL: process.env.CALLBACK_URL
       },
-      (accessToken, refreshToken, profile, done) => {
-        return done(null, profile);
+      (accessToken, refreshToken,params, profile, done) => {
+        return done(null, {
+          profile: profile,
+          token: accessToken,
+			    parametros: params.id_token ,
+        });
       }
     )
   );

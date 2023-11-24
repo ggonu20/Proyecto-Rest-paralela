@@ -1,7 +1,7 @@
 // routes/reservas.js
 const express = require('express');
 const { getDatabase, ref, push, set, child, get } = require('firebase/database');
-const firebaseApp = require('../firebaseConfig');
+const firebaseApp = require('../config/firebaseConfig');
 
 const router = express.Router();
 const database = getDatabase(firebaseApp);

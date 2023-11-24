@@ -3,16 +3,18 @@ const express = require('express');
 const session = require('express-session');
 const initializePassport = require('./auth/autenticacion');
 const passport = require('passport');
-const firebaseApp = require('./firebaseConfig');
+const firebaseApp = require('./config/firebaseConfig');
 const indexRoutes = require('./routes/index');
 const ejs = require('ejs');
 const path = require('path');
 const reservasRoutes = require('./routes/reservas');
 const salasRoutes = require('./routes/salas');
 const authRoutes = require('./routes/auth');
+require('dotenv').config();
+
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3300;
 
 // Middleware para procesar datos JSON
 app.use(express.json());
@@ -20,7 +22,7 @@ app.use(express.json());
 // Configuración de express-session con la cadena secreta generada
 app.use(
   session({
-    secret: '17e9d8d4e1061540b689b49f0d81ef5e00fe77d29c1b56b301cbf4c8722e3de9',
+    secret: process.env.GOOGLE_CLIENT_SECRET,
     resave: false,
     saveUninitialized: true,
   })
