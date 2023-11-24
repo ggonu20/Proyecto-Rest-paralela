@@ -32,9 +32,19 @@ const borrarSala = (pk) => {
   return knex(table).where({ pk }).del();
 };
 
+const actualizarSala = (pk, { name, status, capacity }) => {
+  return knex('salas').where({ pk }).update({ name, status, capacity });
+};
+
+const verificarExistenciaSala = (pk) => {
+  return knex('salas').where({ pk }).first();
+};
+
 // Exporta ambas funciones
 module.exports = {
   crearSala,
   listarSalas,
-  borrarSala
+  borrarSala,
+  actualizarSala,
+  verificarExistenciaSala
 };

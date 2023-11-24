@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const { crearSala, listarSalas, borrarSala } = require('./services/databaseService');
+const { crearSala, listarSalas, borrarSala, actualizarSala, verificarExistenciaSala } = require('./services/databaseService');
 require('dotenv').config();
 const secret = process.env.SECRET;
 module.exports = function(app, databaseService){
@@ -67,5 +67,27 @@ module.exports = function(app, databaseService){
             response.status(401).json({ error: error.message });
         }
     });
+
+    app.put('/salas/actualizar/:pk', async (request, response) => {
+        try {
+          const token = request.headers.authorization.split(" ")[1];
+          const payload = jwt.verify(token, secret);
+          if (Date.now() > payload.exp) {
+            return response.status(401).json({ error: 'Token expirado' });
+          }
+                const pk = request.params.pk;
+                const { name, status, capacity } = request.body;
+                // Verificar si la sala con la clave primaria proporcionada existe antes de intentar actualizar
+                const salaExistente = await verificarExistenciaSala(pk);
+                if (!salaExistente) {
+                    return response.status(404).json({ error: 'Sala no encontrada' });
+                }
+                // Actualizar la sala si existe
+                await actualizarSala(pk, { name, status, capacity });
+                response.status(200).json({ mensaje: 'Sala actualizada con éxito' });
+        } catch (error) {
+          response.status(401).json({ error: error.message });
+        }
+      });
 
 };
