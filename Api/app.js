@@ -10,6 +10,7 @@ const path = require('path');
 const reservasRoutes = require('./routes/reservas');
 const salasRoutes = require('./routes/salas');
 const authRoutes = require('./routes/auth');
+const Middleware = require('./auth/autenticacionmiddleware');
 require('dotenv').config();
 
 
@@ -37,6 +38,12 @@ app.use(passport.session()); // Agrega el uso de passport.session() después de 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views')); // Ajusta la ruta según tu estructura de carpetas
 
+//Ruta protegida
+app.get('/perfil', Middleware.isAuthenticated, (req, res) => {
+  // Si llegamos aquí, significa que el usuario está autenticado
+  res.send('Bienvenido a tu perfil');
+});
+
 // Rutas
 app.use('/api/salas', salasRoutes);
 app.use('/auth', authRoutes);
@@ -46,15 +53,3 @@ app.use('/', indexRoutes);
 app.listen(port, () => {
   console.log(`El servidor está escuchando en http://localhost:${port}`);
 });
-
-
-
-
-
-
-
-
-
-
-
-
