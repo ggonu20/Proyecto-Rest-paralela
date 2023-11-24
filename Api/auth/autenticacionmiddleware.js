@@ -10,7 +10,7 @@ function isAuthenticated(req, res, next) {
   }
 
   // Si no está autenticado, redirigir a la página de inicio de sesión u otra página
-  res.redirect('/');
+  res.status(401).json({ error: 'No ha iniciado sesión' });
 }
 
 module.exports = {

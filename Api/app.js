@@ -45,9 +45,8 @@ app.get('/perfil', Middleware.isAuthenticated, (req, res) => {
 });
 
 // Rutas
-app.use('/api/salas', salasRoutes);
-app.use('/auth', authRoutes);
-app.use('/api', reservasRoutes);
+app.use('/api/salas', Middleware.isAuthenticated, salasRoutes);
+app.use('/api', Middleware.isAuthenticated, reservasRoutes);
 app.use('/', indexRoutes);
 
 app.listen(port, () => {
