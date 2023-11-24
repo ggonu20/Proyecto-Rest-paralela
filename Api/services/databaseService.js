@@ -28,8 +28,13 @@ const listarSalas = () => {
   );
 };
 
+const borrarSala = (pk) => {
+  return knex(table).where({ pk }).del();
+};
+
 // Exporta ambas funciones
 module.exports = {
   crearSala,
-  listarSalas
+  listarSalas,
+  borrarSala
 };

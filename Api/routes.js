@@ -1,8 +1,10 @@
 const jwt = require('jsonwebtoken');
-const { crearSala, listarSalas } = require('./services/databaseService');
+const { crearSala, listarSalas, borrarSala } = require('./services/databaseService');
 require('dotenv').config();
 const secret = process.env.SECRET;
 module.exports = function(app, databaseService){
+    
+    
     app.get('/', (request, response) =>{
         response.status(200).json({"mensaje": "Todo bien"});
 
@@ -49,6 +51,21 @@ module.exports = function(app, databaseService){
         } catch (error){
             response.status(401).send({error: error.message});
         };
+    });
+
+    app.delete('/salas/borrar/:pk', async (request, response) => {
+        try {
+            const token = request.headers.authorization.split(" ")[1];
+            const payload = jwt.verify(token, secret);
+            if (Date.now() > payload.exp) {
+                return response.status(401).json({ error: 'Token expirado' });
+            }
+                const pk = request.params.pk;
+                await borrarSala(pk);
+                response.status(200).json({ mensaje: 'Sala eliminada con éxito' });
+        } catch (error) {
+            response.status(401).json({ error: error.message });
+        }
     });
 
 };
