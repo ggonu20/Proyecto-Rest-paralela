@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const { crearSala, listarSalas, borrarSala, actualizarSala, verificarExistenciaSala, crearReserva, listarReservas, actualizarReserva, borrarReservaPorToken, obtenerReservaPorToken, buscarSalaPorCodigo } = require('./services/databaseService');
+const { crearSala, listarSalas, borrarSala, actualizarSala, verificarExistenciaSala, crearReserva, listarReservas, actualizarReserva, borrarReservaPorToken, obtenerReservaPorToken, buscarSalaPorCodigo, Buscarpost, obtenerAgendaPorFechaYSala } = require('./services/databaseService');
 require('dotenv').config();
 const secret = process.env.SECRET;
 module.exports = function(app, databaseService){
@@ -122,11 +122,36 @@ module.exports = function(app, databaseService){
             }
             try {
                 const nuevaReserva = request.body;
-                await crearReserva(nuevaReserva);
+                await crearReserva(nuevaReserva, payload);
                 response.status(200).json({ mensaje: 'Reserva creada con éxito' });
               } catch (error) {
                 response.status(500).json({ error: error.message });
               };
+        } catch (error) {
+            response.status(500).json({ error: error.message });
+        }
+    }); 
+    
+    app.post('/v1/reserve/search', async (request, response) => {
+        try {
+            const token = request.headers.authorization.split(" ")[1];
+            const payload = jwt.verify(token, secret);
+            if (Date.now() > payload.exp) {
+                return response.status(401).json({ error: 'Token expirado' });
+            }
+            try {
+                const buscarReserva = request.body;
+                const reservaEncontrada = await Buscarpost(buscarReserva);
+                
+                // Verificar si se encontró una reserva y responder en consecuencia
+                if (reservaEncontrada) {
+                    response.status(200).json({ reserva: reservaEncontrada, mensaje: 'Reserva encontrada con éxito' });
+                } else {
+                    response.status(404).json({ mensaje: 'Reserva no encontrada' });
+                }
+            } catch (error) {
+                response.status(500).json({ error: error.message });
+            };
         } catch (error) {
             response.status(500).json({ error: error.message });
         }
@@ -202,6 +227,25 @@ module.exports = function(app, databaseService){
             }
     
             response.status(200).json({ reserva, mensaje: 'Reserva obtenida con éxito' });
+        } catch (error) {
+            response.status(401).json({ error: error.message });
+        }
+    });
+
+    app.get('/v1/reserve/{roomCode}/schedule/{date}', async (request, response) => {
+        try {
+            const token = request.headers.authorization.split(" ")[1];
+            const payload = jwt.verify(token, secret);
+            if (Date.now() > payload.exp) {
+                return response.status(401).json({ error: 'Token expirado' });
+            }
+    
+            const roomCode = request.params.roomCode;
+            const startDate = request.params.startDate;
+
+            const agenda = await obtenerAgendaPorFechaYSala(roomCode, startDate);
+    
+            response.status(200).json({ agenda, mensaje: 'Agenda obtenida con éxito' });
         } catch (error) {
             response.status(401).json({ error: error.message });
         }
