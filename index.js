@@ -4,6 +4,7 @@ const {databaseService} = require('./services/databaseService.js');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 const secret = process.env.SECRET;
+const port = process.env.PORT||3300;
 const app = express();
 
 app.use(bodyParser.json());
@@ -28,6 +29,6 @@ app.post("/token",(req,res)=>{
 
 require('./routes')(app,databaseService);
 
-app.listen(3000, function () {
+app.listen(port, function () {
     console.log('App listening on port 3000!');
 });
