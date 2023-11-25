@@ -27,7 +27,7 @@ app.post("/token",(req,res)=>{
     res.send({token});
 });
 
-require('./routes')(app,databaseService);
+require('./dist/routes')(app,databaseService);
 
 app.listen(port, function () {
     console.log('App listening on port 3000!');
