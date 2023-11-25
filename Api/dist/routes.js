@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const { crearSala, listarSalas, borrarSala, actualizarSala, verificarExistenciaSala, crearReserva, listarReservas, actualizarReserva, borrarReservaPorToken, obtenerReservaPorToken, buscarSalaPorCodigo, Buscarpost, obtenerAgendaPorFechaYSala } = require('./services/databaseService');
+const { crearSala, listarSalas, borrarSala, actualizarSala, verificarExistenciaSala, crearReserva, listarReservas, actualizarReserva, borrarReservaPorToken, obtenerReservaPorToken, buscarSalaPorCodigo, Buscarpost, obtenerAgendaPorFechaYSala } = require('../services/databaseService');
 require('dotenv').config();
 const secret = process.env.SECRET;
 module.exports = function(app, databaseService){
