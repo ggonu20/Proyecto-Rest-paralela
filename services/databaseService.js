@@ -3,7 +3,7 @@ const knex = require('knex')({
   client: 'pg',
   connection: {
       host: process.env.PGHOST,
-      port: PGPORT,
+      port: 5432,
       user: process.env.PGUSER,
       password: process.env.PGPASSWORD,
       database: process.env.PGDATABASE
