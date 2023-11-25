@@ -39,6 +39,15 @@ const actualizarSala = (pk, { name, status, capacity }) => {
 const verificarExistenciaSala = (pk) => {
   return knex('salas').where({ pk }).first();
 };
+
+const buscarSalaPorCodigo = async (codigoSala) => {
+  try {
+    const sala = await knex('salas').where({ pk: codigoSala }).first();
+    return sala;
+  } catch (error) {
+    throw new Error(`Error al buscar la sala por código: ${error.message}`);
+  }
+};
 //--------------------------------------------------------------------
 
 const crearReserva = ({ token, usuario, sala_id, fecha_inicio, fecha_termino }) => {
@@ -100,5 +109,6 @@ module.exports = {
   listarReservas,
   actualizarReserva,
   borrarReservaPorToken,
-  obtenerReservaPorToken
+  obtenerReservaPorToken,
+  buscarSalaPorCodigo
 };

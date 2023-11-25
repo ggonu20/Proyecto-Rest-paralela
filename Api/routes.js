@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const { crearSala, listarSalas, borrarSala, actualizarSala, verificarExistenciaSala, crearReserva, listarReservas, actualizarReserva, borrarReservaPorToken, obtenerReservaPorToken } = require('./services/databaseService');
+const { crearSala, listarSalas, borrarSala, actualizarSala, verificarExistenciaSala, crearReserva, listarReservas, actualizarReserva, borrarReservaPorToken, obtenerReservaPorToken, buscarSalaPorCodigo } = require('./services/databaseService');
 require('dotenv').config();
 const secret = process.env.SECRET;
 module.exports = function(app, databaseService){
@@ -10,7 +10,7 @@ module.exports = function(app, databaseService){
 
     });
 
-    app.get('/salas', async (request,response)=>{
+    app.get('/v1/rooms', async (request,response)=>{
         try {
             // Bearer "token"
             const token = request.headers.authorization.split(" ")[1];
@@ -85,6 +85,27 @@ module.exports = function(app, databaseService){
                 // Actualizar la sala si existe
                 await actualizarSala(pk, { name, status, capacity });
                 response.status(200).json({ mensaje: 'Sala actualizada con éxito' });
+        } catch (error) {
+          response.status(401).json({ error: error.message });
+        }
+      });
+
+      app.get('/v1/rooms/:pk', async (request, response) => {
+        try {
+          const token = request.headers.authorization.split(" ")[1];
+          const payload = jwt.verify(token, secret);
+          if (Date.now() > payload.exp) {
+            return response.status(401).json({ error: 'Token expirado' });
+          }
+    
+          const codigoSala = request.params.pk;
+          const sala = await buscarSalaPorCodigo(codigoSala);
+    
+          if (!sala) {
+            return response.status(404).json({ error: 'Sala no encontrada' });
+          }
+    
+          response.status(200).json({ sala, mensaje: 'Sala obtenida con éxito' });
         } catch (error) {
           response.status(401).json({ error: error.message });
         }

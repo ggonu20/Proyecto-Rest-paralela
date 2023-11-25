@@ -1,3 +1,4 @@
 /Api/node_modules
-/JWT/node_modules/
+/JWT/node_modules
+/Auth/node_modules/
 .env
