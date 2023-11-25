@@ -113,7 +113,7 @@ module.exports = function(app, databaseService){
 //--------------------reservas---------------------------
 
 
-    app.post('/reservas', async (request, response) => {
+    app.post('/v1/reserve/request', async (request, response) => {
         try {
             const token = request.headers.authorization.split(" ")[1];
             const payload = jwt.verify(token, secret);

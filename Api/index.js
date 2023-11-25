@@ -10,14 +10,19 @@ app.use(bodyParser.json());
 
 app.post("/token",(req,res)=>{
     // get user from DB
-    const { id: sub, name } = { id: "gonzalez",name: "gabriel" };
+    const externalToken = req.body.jwt;
+    const decodedExternalToken = jwt.decode(externalToken);
+    
+    // Verificar si se proporcionó un JWT en el cuerpo
+    if (!externalToken) {
+        return res.status(400).send({ error: 'No se proporcionó un JWT en el cuerpo de la solicitud.' });
+    }  
 
     const token = jwt.sign({
-        sub,
-        name,
+        decodedExternalToken,
         exp: Date.now() + 2 * 24 * 60 * 60 * 1000 // 2 días en milisegundos
     }, secret)
-
+    console.log('Contenido del token:', jwt.verify(token,secret));
     res.send({token});
 });
 
