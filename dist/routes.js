@@ -232,7 +232,7 @@ module.exports = function(app, databaseService){
         }
     });
 
-    app.get('/v1/reserve/{roomCode}/schedule/{date}', async (request, response) => {
+    app.get('/v1/reserve/:roomCode/schedule/;date', async (request, response) => {
         try {
             const token = request.headers.authorization.split(" ")[1];
             const payload = jwt.verify(token, secret);
@@ -241,7 +241,7 @@ module.exports = function(app, databaseService){
             }
     
             const roomCode = request.params.roomCode;
-            const startDate = request.params.startDate;
+            const startDate = request.params.date;
 
             const agenda = await obtenerAgendaPorFechaYSala(roomCode, startDate);
     
